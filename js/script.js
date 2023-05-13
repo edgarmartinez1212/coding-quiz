@@ -1,53 +1,65 @@
 let headerEl = document.querySelector("header");
 let mainEl = document.querySelector("main");
 let footerEl = document.querySelector("footer");
-let secondsLeft = 30;
-let score = 0;
-
-let viewScoresEl = document.createElement("h2");
-let timerEl = document.createElement("h2");
-let startButtonDiv = document.createElement("div");
-let startButtonEl = document.createElement("button");
-let displayEl = document.createElement("div");
-let questionTitle = document.createElement("h1");
-let buttonDiv = document.createElement("div");
-let validateDiv = document.createElement("div");
-let validateSelection = document.createElement("h3");
-
-viewScoresEl.textContent = "View High Scores";
-timerEl.textContent = `Time: ${secondsLeft}`;
-startButtonEl.textContent = "Start Quiz";
-
-headerEl.appendChild(viewScoresEl);
-headerEl.appendChild(timerEl);
-mainEl.appendChild(startButtonDiv);
-startButtonDiv.appendChild(startButtonEl);
-mainEl.appendChild(displayEl);
-displayEl.appendChild(questionTitle);
-displayEl.appendChild(buttonDiv);
-validateDiv.appendChild(validateSelection);
-mainEl.appendChild(validateDiv);
-
 let questions = [
   {
     question: "What color is the sky?",
-    answers: ["Blue", "Green", "Red", "Yellow"],
-    correct: "Blue",
+    choices: ["Blue", "Orange", "Yellow", "Red"],
+    answer: "Blue",
   },
   {
-    question: "What color is the sky?",
-    answers: ["Blue", "Green", "Red", "Yellow"],
-    correct: "Blue",
+    question: "What color is space?",
+    choices: ["Blue", "Black", "Yellow", "Red"],
+    answer: "Black",
   },
   {
-    question: "What color is the sky?",
-    answers: ["Blue", "Green", "Red", "Yellow"],
-    correct: "Blue",
+    question: "What color is the sun?",
+    choices: ["Blue", "Orange", "Yellow", "Red"],
+    answer: "Yellow",
   },
 ];
+let score = 0;
+
+// header default - do not remove
+let viewScoresEl = document.createElement("h3");
+let timerEl = document.createElement("h3");
+let secondsLeft = 30;
+let iteration = 0;
+viewScoresEl.textContent = "View Scores";
+timerEl.textContent = `Time: ${secondsLeft}`;
+headerEl.appendChild(viewScoresEl);
+headerEl.appendChild(timerEl);
+
+// main default
+let titleEl = document.createElement("h1");
+let startButton = document.createElement("button");
+titleEl.textContent = "Welcome to my Quiz!";
+startButton.textContent = "START";
+// startButton.setAttribute("id", "startButton");
+mainEl.append(titleEl, startButton);
+
+function validate(event) {
+  let reusltEl = document.createElement("h3");
+  if (event.target.textContent === questions[iteration].answer) {
+    reusltEl.textContent = "Correct!";
+  } else {
+    reusltEl.textContent = "Wrong Answer!";
+  }
+  footerEl.appendChild(reusltEl);
+}
+
+function createCard() {
+  mainEl.removeChild(startButton);
+  titleEl.textContent = questions[iteration].question;
+  for (let i = 0; i < 4; i++) {
+    let buttonEl = document.createElement("button");
+    buttonEl.textContent = questions[iteration].choices[i];
+    mainEl.append(buttonEl);
+    buttonEl.addEventListener("click", validate);
+  }
+}
 
 function startTimer() {
-  start();
   let timerInterval = setInterval(function () {
     secondsLeft--;
     timerEl.textContent = `Time: ${secondsLeft}`;
@@ -58,39 +70,9 @@ function startTimer() {
   }, 1000);
 }
 
-function validate(event) {
-  let result = event.target.value === questions[0].correct;
-  validateSelection.textContent = result;
-  if (result) score++;
-}
-
-function createCard() {
-  questionTitle.textContent = questions[0].question;
-  let button1 = document.createElement("button");
-  let button2 = document.createElement("button");
-  let button3 = document.createElement("button");
-  let button4 = document.createElement("button");
-  button1.textContent = questions[0].answers[0];
-  button2.textContent = questions[0].answers[1];
-  button3.textContent = questions[0].answers[2];
-  button4.textContent = questions[0].answers[3];
-  button1.setAttribute("value", questions[0].answers[0]);
-  button2.setAttribute("value", questions[0].answers[1]);
-  button3.setAttribute("value", questions[0].answers[2]);
-  button4.setAttribute("value", questions[0].answers[3]);
-  buttonDiv.append(button1);
-  buttonDiv.append(button2);
-  buttonDiv.append(button3);
-  buttonDiv.append(button4);
-  button1.addEventListener("click", validate);
-  button2.addEventListener("click", validate);
-  button3.addEventListener("click", validate);
-  button4.addEventListener("click", validate);
-}
-
-function start() {
+function startQuiz() {
+  startTimer();
   createCard();
-  startButtonEl.setAttribute("style", "display: none;");
 }
 
-startButtonEl.addEventListener("click", startTimer);
+startButton.addEventListener("click", startQuiz);
