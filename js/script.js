@@ -18,14 +18,18 @@ let questions = [
     answer: "Yellow",
   },
 ];
+localStorage.setItem("scores", []);
 let score = 0;
+let timerInterval = "";
 
 // header default - do not remove
 let viewScoresEl = document.createElement("h3");
 let timerEl = document.createElement("h3");
+let choicesDiv = document.createElement("div");
 let secondsLeft = 30;
 let iteration = 0;
 viewScoresEl.textContent = "View Scores";
+viewScoresEl.setAttribute("style", "cursor: pointer");
 timerEl.textContent = `Time: ${secondsLeft}`;
 headerEl.appendChild(viewScoresEl);
 headerEl.appendChild(timerEl);
@@ -35,44 +39,122 @@ let titleEl = document.createElement("h1");
 let startButton = document.createElement("button");
 titleEl.textContent = "Welcome to my Quiz!";
 startButton.textContent = "START";
-// startButton.setAttribute("id", "startButton");
 mainEl.append(titleEl, startButton);
 
+// footer default
+let reusltEl = document.createElement("h3");
+footerEl.appendChild(reusltEl);
+
+// ends quiz- removes choicesDiv, displays score
+function endQuiz() {
+  if (secondsLeft === 0) {
+    titleEl.textContent = "Times Up!";
+  } else {
+    titleEl.textContent = "Quiz Over";
+  }
+  secondsLeft = "--";
+  timerEl.textContent = `Time: ${secondsLeft}`;
+  mainEl.removeChild(choicesDiv);
+  console.log(score);
+  clearInterval(timerInterval);
+
+  let scoreEl = document.createElement("h3");
+  scoreEl.textContent = `Your Score: ${score}`;
+  mainEl.appendChild(scoreEl);
+}
+
+// validates choice with correct answer- updates question, increments iteration
 function validate(event) {
-  let reusltEl = document.createElement("h3");
+  console.log(event);
+
+  let waitTime = 1;
+  let wait = setInterval(function () {
+    waitTime--;
+    if (waitTime === 0) {
+      clearInterval(wait);
+      updateQuestion();
+      reusltEl.textContent = "";
+    }
+  }, 1000);
+
+  let choicesArr = choicesDiv.childNodes;
+  for (let i = 0; i < choicesDiv.childElementCount; i++) {
+    choicesArr[i].removeEventListener("click", validate);
+    if (choicesArr[i].textContent === questions[iteration].answer) {
+      choicesArr[i].setAttribute("style", "border: 3px solid green");
+    } else {
+      choicesArr[i].setAttribute("style", "border: 3px solid red");
+    }
+  }
+
   if (event.target.textContent === questions[iteration].answer) {
     reusltEl.textContent = "Correct!";
+    score++;
   } else {
     reusltEl.textContent = "Wrong Answer!";
   }
-  footerEl.appendChild(reusltEl);
+  iteration++;
 }
 
-function createCard() {
-  mainEl.removeChild(startButton);
-  titleEl.textContent = questions[iteration].question;
-  for (let i = 0; i < 4; i++) {
-    let buttonEl = document.createElement("button");
-    buttonEl.textContent = questions[iteration].choices[i];
-    mainEl.append(buttonEl);
-    buttonEl.addEventListener("click", validate);
+// updates card- title and questions
+function updateQuestion() {
+  if (iteration < questions.length) {
+    titleEl.textContent = questions[iteration].question;
+    let choicesArr = choicesDiv.childNodes;
+    for (let i = 0; i < choicesArr.length; i++) {
+      choicesArr[i].addEventListener("click", validate);
+      choicesArr[i].textContent = questions[iteration].choices[i];
+      choicesArr[i].setAttribute("id", questions[iteration].choices[i]);
+      choicesArr[i].setAttribute("style", "border: revert");
+    }
+  } else {
+    endQuiz();
   }
 }
 
+// creates card- removes button, creates and appends 4 buttons to choicesDiv (globall), appends choicesDiv to mainEl
+function createCard() {
+  for (let i = 0; i < questions[iteration].choices.length; i++) {
+    let buttonEl = document.createElement("button");
+    choicesDiv.append(buttonEl);
+    buttonEl.addEventListener("click", validate);
+    buttonEl.setAttribute("id", "");
+  }
+  mainEl.appendChild(choicesDiv);
+  updateQuestion();
+}
+
+// starts timer - decrements seconds, ends quiz at 0 seconds
 function startTimer() {
-  let timerInterval = setInterval(function () {
+  timerInterval = setInterval(function () {
     secondsLeft--;
     timerEl.textContent = `Time: ${secondsLeft}`;
     if (secondsLeft === 0) {
       clearInterval(timerInterval);
-      console.log(score);
+      endQuiz();
     }
   }, 1000);
 }
 
+function removeStartButton() {
+  if (mainEl.contains(startButton)) {
+    mainEl.removeChild(startButton);
+  }
+}
+
+// starts quiz - creates card
 function startQuiz() {
   startTimer();
+  removeStartButton();
   createCard();
 }
 
+function handleSubmit(event) {
+  event.preventDefault();
+  console.log(event);
+}
+
 startButton.addEventListener("click", startQuiz);
+timerEl.addEventListener("click", function () {
+  location.reload();
+});
