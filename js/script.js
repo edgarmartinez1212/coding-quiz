@@ -18,9 +18,9 @@ let questions = [
     answer: "Yellow",
   },
 ];
-localStorage.setItem("scores", []);
 let score = 0;
 let timerInterval = "";
+// localStorage.setItem("scores", JSON.stringify([]));
 
 // header default - do not remove
 let viewScoresEl = document.createElement("h3");
@@ -38,8 +38,39 @@ headerEl.appendChild(timerEl);
 let titleEl = document.createElement("h1");
 let startButton = document.createElement("button");
 titleEl.textContent = "Welcome to my Quiz!";
-startButton.textContent = "START";
+startButton.textContent = "Start";
 mainEl.append(titleEl, startButton);
+
+// main - form
+let scoresFormEl = document.createElement("form");
+let nameTextEl = document.createElement("input");
+let scoresSubmitEl = document.createElement("button");
+nameTextEl.placeholder = "Enter your name";
+scoresSubmitEl.textContent = "Submit";
+scoresFormEl.append(nameTextEl, scoresSubmitEl);
+mainEl.append(scoresFormEl);
+scoresSubmitEl.addEventListener("click", handleSubmit);
+function handleSubmit(event) {
+  event.preventDefault();
+  let scoresArr = JSON.parse(localStorage.getItem("scores"));
+  scoresArr.push({ name: nameTextEl.value, highScore: score });
+  localStorage.setItem("scores", JSON.stringify(scoresArr));
+}
+
+// main - view scores
+let viewScoresDiv = document.createElement("div");
+let scoresTitleEl = document.createElement("h2");
+let scoresEl = document.createElement("h4");
+let reviewScoresEl = document.createElement("button");
+scoresTitleEl.textContent = "Top Scores";
+reviewScoresEl.textContent = "View";
+viewScoresDiv.append(scoresTitleEl, reviewScoresEl);
+mainEl.append(viewScoresDiv);
+reviewScoresEl.addEventListener("click", function () {
+  let scoresArr = JSON.parse(localStorage.getItem("scores"));
+  let topScores = [];
+  for (let i = 0; i < scoresArr.length; i++) {}
+});
 
 // footer default
 let reusltEl = document.createElement("h3");
@@ -136,6 +167,7 @@ function startTimer() {
   }, 1000);
 }
 
+// removes the start button if appended to mainEl
 function removeStartButton() {
   if (mainEl.contains(startButton)) {
     mainEl.removeChild(startButton);
@@ -147,11 +179,6 @@ function startQuiz() {
   startTimer();
   removeStartButton();
   createCard();
-}
-
-function handleSubmit(event) {
-  event.preventDefault();
-  console.log(event);
 }
 
 startButton.addEventListener("click", startQuiz);
