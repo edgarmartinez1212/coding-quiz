@@ -1,6 +1,8 @@
 let headerEl = document.querySelector("header");
 let mainEl = document.querySelector("main");
+let containerEl = document.createElement("div");
 let footerEl = document.querySelector("footer");
+
 let questions = [
   {
     question: "What color is the sky?",
@@ -20,63 +22,30 @@ let questions = [
 ];
 let score = 0;
 let timerInterval = "";
-// localStorage.setItem("scores", JSON.stringify([]));
+let secondsLeft = 30;
+let iteration = 0;
 
-// header default - do not remove
+//   header default - do not delete
 let viewScoresEl = document.createElement("h3");
 let timerEl = document.createElement("h3");
 let choicesDiv = document.createElement("div");
-let secondsLeft = 30;
-let iteration = 0;
 viewScoresEl.textContent = "View Scores";
-viewScoresEl.setAttribute("style", "cursor: pointer");
+viewScoresEl.setAttribute("style", "cursor: default");
 timerEl.textContent = `Time: ${secondsLeft}`;
 headerEl.appendChild(viewScoresEl);
 headerEl.appendChild(timerEl);
 
 // main default
 let titleEl = document.createElement("h1");
-let startButton = document.createElement("button");
-titleEl.textContent = "Welcome to my Quiz!";
-startButton.textContent = "Start";
-mainEl.append(titleEl, startButton);
+let startBtn = document.createElement("button");
 
-// main - form
-let scoresFormEl = document.createElement("form");
-let nameTextEl = document.createElement("input");
-let scoresSubmitEl = document.createElement("button");
-nameTextEl.placeholder = "Enter your name";
-scoresSubmitEl.textContent = "Submit";
-scoresFormEl.append(nameTextEl, scoresSubmitEl);
-mainEl.append(scoresFormEl);
-scoresSubmitEl.addEventListener("click", handleSubmit);
-function handleSubmit(event) {
-  event.preventDefault();
-  let scoresArr = JSON.parse(localStorage.getItem("scores"));
-  scoresArr.push({ name: nameTextEl.value, highScore: score });
-  localStorage.setItem("scores", JSON.stringify(scoresArr));
-}
-
-// main - view scores
-let viewScoresDiv = document.createElement("div");
-let scoresTitleEl = document.createElement("h2");
-let scoresEl = document.createElement("h4");
-let reviewScoresEl = document.createElement("button");
-scoresTitleEl.textContent = "Top Scores";
-reviewScoresEl.textContent = "View";
-viewScoresDiv.append(scoresTitleEl, reviewScoresEl);
-mainEl.append(viewScoresDiv);
-reviewScoresEl.addEventListener("click", function () {
-  let scoresArr = JSON.parse(localStorage.getItem("scores"));
-  let topScores = [];
-  for (let i = 0; i < scoresArr.length; i++) {}
-});
+mainEl.append(titleEl, containerEl);
 
 // footer default
-let reusltEl = document.createElement("h3");
-footerEl.appendChild(reusltEl);
+let resultEl = document.createElement("h3");
+footerEl.appendChild(resultEl);
 
-// ends quiz- removes choicesDiv, displays score
+// ends quiz-
 function endQuiz() {
   if (secondsLeft === 0) {
     titleEl.textContent = "Times Up!";
@@ -85,77 +54,34 @@ function endQuiz() {
   }
   secondsLeft = "--";
   timerEl.textContent = `Time: ${secondsLeft}`;
-  mainEl.removeChild(choicesDiv);
-  console.log(score);
+
   clearInterval(timerInterval);
 
+  let counter = containerEl.childElementCount;
+  for (let i = 0; i < counter; i++) {
+    containerEl.removeChild(containerEl.childNodes[0]);
+  }
+  createForm();
+}
+
+function createForm() {
   let scoreEl = document.createElement("h3");
+  let scoreForm = document.createElement("form");
+  let scoreInput = document.createElement("input");
+  let scoreBtn = document.createElement("button");
   scoreEl.textContent = `Your Score: ${score}`;
-  mainEl.appendChild(scoreEl);
+  scoreInput.placeHolder = "Enter Initials";
+  scoreBtn.textContent = "Submit Score";
+  scoreForm.append(scoreInput, scoreBtn);
+  containerEl.append(scoreEl, scoreForm);
+
+  scoreBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    console.log(scoreInput.value);
+  });
 }
 
-// validates choice with correct answer- updates question, increments iteration
-function validate(event) {
-  console.log(event);
-
-  let waitTime = 1;
-  let wait = setInterval(function () {
-    waitTime--;
-    if (waitTime === 0) {
-      clearInterval(wait);
-      updateQuestion();
-      reusltEl.textContent = "";
-    }
-  }, 1000);
-
-  let choicesArr = choicesDiv.childNodes;
-  for (let i = 0; i < choicesDiv.childElementCount; i++) {
-    choicesArr[i].removeEventListener("click", validate);
-    if (choicesArr[i].textContent === questions[iteration].answer) {
-      choicesArr[i].setAttribute("style", "border: 3px solid green");
-    } else {
-      choicesArr[i].setAttribute("style", "border: 3px solid red");
-    }
-  }
-
-  if (event.target.textContent === questions[iteration].answer) {
-    reusltEl.textContent = "Correct!";
-    score++;
-  } else {
-    reusltEl.textContent = "Wrong Answer!";
-  }
-  iteration++;
-}
-
-// updates card- title and questions
-function updateQuestion() {
-  if (iteration < questions.length) {
-    titleEl.textContent = questions[iteration].question;
-    let choicesArr = choicesDiv.childNodes;
-    for (let i = 0; i < choicesArr.length; i++) {
-      choicesArr[i].addEventListener("click", validate);
-      choicesArr[i].textContent = questions[iteration].choices[i];
-      choicesArr[i].setAttribute("id", questions[iteration].choices[i]);
-      choicesArr[i].setAttribute("style", "border: revert");
-    }
-  } else {
-    endQuiz();
-  }
-}
-
-// creates card- removes button, creates and appends 4 buttons to choicesDiv (globall), appends choicesDiv to mainEl
-function createCard() {
-  for (let i = 0; i < questions[iteration].choices.length; i++) {
-    let buttonEl = document.createElement("button");
-    choicesDiv.append(buttonEl);
-    buttonEl.addEventListener("click", validate);
-    buttonEl.setAttribute("id", "");
-  }
-  mainEl.appendChild(choicesDiv);
-  updateQuestion();
-}
-
-// starts timer - decrements seconds, ends quiz at 0 seconds
+// starts timer - decrements seconds
 function startTimer() {
   timerInterval = setInterval(function () {
     secondsLeft--;
@@ -167,21 +93,74 @@ function startTimer() {
   }, 1000);
 }
 
-// removes the start button if appended to mainEl
-function removeStartButton() {
-  if (mainEl.contains(startButton)) {
-    mainEl.removeChild(startButton);
+function validate(event) {
+  let waitTime = 1;
+  let wait = setInterval(function () {
+    waitTime--;
+    if (waitTime === 0) {
+      clearInterval(wait);
+      updateQuestion();
+      resultEl.textContent = "";
+    }
+  }, 1000);
+  let choicesArr = containerEl.childNodes;
+  for (let i = 0; i < containerEl.childElementCount; i++) {
+    choicesArr[i].removeEventListener("click", validate);
+    if (choicesArr[i].textContent === questions[iteration].answer) {
+      choicesArr[i].setAttribute("style", "border: 3px solid green");
+    } else {
+      choicesArr[i].setAttribute("style", "border: 3px solid red");
+    }
+  }
+  if (event.target.textContent === questions[iteration].answer) {
+    resultEl.textContent = "Correct!";
+    score++;
+  } else {
+    resultEl.textContent = "Wrong Answer!";
+  }
+  iteration++;
+}
+
+function updateQuestion() {
+  if (iteration < questions.length) {
+    titleEl.textContent = questions[iteration].question;
+    let choicesArr = containerEl.childNodes;
+    for (let i = 0; i < choicesArr.length; i++) {
+      choicesArr[i].textContent = questions[iteration].choices[i];
+      choicesArr[i].setAttribute("id", "questionChoice");
+      choicesArr[i].setAttribute("value", questions[iteration].choices[i]);
+      choicesArr[i].addEventListener("click", validate);
+      choicesArr[i].setAttribute("style", "border: revert");
+    }
+  } else {
+    endQuiz();
   }
 }
 
-// starts quiz - creates card
-function startQuiz() {
-  startTimer();
-  removeStartButton();
-  createCard();
+function createCard() {
+  for (let i = 0; i < questions[iteration].choices.length; i++) {
+    let buttonEl = document.createElement("button");
+    containerEl.append(buttonEl);
+    buttonEl.addEventListener("click", validate);
+    buttonEl.setAttribute("id", "");
+  }
+  updateQuestion();
 }
 
-startButton.addEventListener("click", startQuiz);
-timerEl.addEventListener("click", function () {
-  location.reload();
-});
+function startQuiz() {
+  containerEl.removeChild(startBtn);
+  createCard();
+  startTimer();
+}
+
+function init() {
+  titleEl.textContent = "Welcome to my quiz!";
+  startBtn.textContent = "Start";
+  containerEl.appendChild(startBtn);
+}
+
+startBtn.addEventListener("click", startQuiz);
+
+init();
+
+// GOAL - build site without needing to refresh page
