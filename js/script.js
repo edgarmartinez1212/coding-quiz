@@ -32,7 +32,7 @@ let timerEl = document.createElement("h3");
 let choicesDiv = document.createElement("div");
 viewScoresEl.textContent = "View Scores";
 viewScoresEl.setAttribute("style", "cursor: default");
-timerEl.textContent = `Time: ${secondsLeft}`;
+
 headerEl.appendChild(viewScoresEl);
 headerEl.appendChild(timerEl);
 
@@ -46,8 +46,15 @@ mainEl.append(titleEl, containerEl);
 let resultEl = document.createElement("h3");
 footerEl.appendChild(resultEl);
 
+// button card
+// need to create a button card to add button choices
+// without button card running into issues removing children from containerEl
+// issue: click view scores when quiz started -> removes children from containerEl but 2!
+
 // ends quiz-
 function endQuiz() {
+  clearContainerEl();
+
   if (secondsLeft === 0) {
     titleEl.textContent = "Times Up!";
   } else {
@@ -57,15 +64,13 @@ function endQuiz() {
   timerEl.textContent = `Time: ${secondsLeft}`;
 
   clearInterval(timerInterval);
-
-  let counter = containerEl.childElementCount;
-  for (let i = 0; i < counter; i++) {
-    containerEl.removeChild(containerEl.childNodes[0]);
-  }
   createForm();
 }
 
+// creates score submission form
 function createForm() {
+  clearContainerEl();
+
   let scoreEl = document.createElement("h3");
   let scoreForm = document.createElement("form");
   let scoreInput = document.createElement("input");
@@ -87,10 +92,14 @@ function createForm() {
     }
     scoresArr.push({ name: scoreInput.value, highScore: score });
     localStorage.setItem("scores", JSON.stringify(scoresArr));
-    let choicesArr = containerEl.childNodes;
-    for (let i = 0; i < choicesArr.length; i++) {
-      choicesArr[i].remove();
-    }
+
+    scoreForm.removeChild(scoreInput);
+    scoreForm.removeChild(scoreBtn);
+    let homeBtn = document.createElement("button");
+    titleEl.textContent = "Score submitted!\nThank you!";
+    homeBtn.textContent = "Home";
+    scoreForm.appendChild(homeBtn);
+    homeBtn.addEventListener("click", init);
   });
 }
 
@@ -106,6 +115,7 @@ function startTimer() {
   }, 1000);
 }
 
+// validates users answer
 function validate(event) {
   let waitTime = 1;
   let wait = setInterval(function () {
@@ -134,6 +144,7 @@ function validate(event) {
   iteration++;
 }
 
+// updates question with next in array- ends quiz if end of question array
 function updateQuestion() {
   if (iteration < questions.length) {
     titleEl.textContent = questions[iteration].question;
@@ -150,7 +161,10 @@ function updateQuestion() {
   }
 }
 
+// creates the question card
 function createCard() {
+  //   clearContainerEl();
+
   for (let i = 0; i < questions[iteration].choices.length; i++) {
     let buttonEl = document.createElement("button");
     containerEl.append(buttonEl);
@@ -160,28 +174,14 @@ function createCard() {
   updateQuestion();
 }
 
-function startQuiz() {
-  containerEl.removeChild(startBtn);
-  createCard();
-  startTimer();
-}
-
-function init() {
-  let choicesArr = containerEl.childNodes;
-  for (let i = 0; i < choicesArr.length; i++) {
-    choicesArr[i].remove();
-  }
-
-  score = 0;
-  titleEl.textContent = "Welcome to my quiz!";
-  startBtn.textContent = "Start";
-  containerEl.appendChild(startBtn);
-}
+// handles view scores button click event- shows high scores or no scores
 function handleViewScores() {
-  let choicesArr = containerEl.childNodes;
-  for (let i = 0; i < choicesArr.length; i++) {
-    choicesArr[i].remove();
-  }
+  clearInterval(timerInterval);
+  clearContainerEl();
+  score = 0;
+  secondsLeft = 30;
+  iteration = 0;
+  timerEl.textContent = `Time: ${secondsLeft}`;
 
   let scoresArr = localStorage.getItem("scores");
   let highScoreDiv = document.createElement("div");
@@ -201,11 +201,38 @@ function handleViewScores() {
   }
   let homeBtn = document.createElement("button");
   homeBtn.textContent = "Home";
-  homeBtn.addEventListener("click", function () {
-    init();
-  });
+  homeBtn.addEventListener("click", init);
   highScoreDiv.appendChild(homeBtn);
   containerEl.appendChild(highScoreDiv);
+}
+
+// starts quiz
+function startQuiz() {
+  containerEl.removeChild(startBtn);
+  createCard();
+  startTimer();
+}
+
+// clears the containerEl div
+function clearContainerEl() {
+  let choicesArr = containerEl.childNodes;
+  for (let i = 0; i < choicesArr.length; i++) {
+    choicesArr[i].remove();
+  }
+}
+
+// default state
+function init() {
+  clearContainerEl();
+
+  score = 0;
+  secondsLeft = 30;
+  iteration = 0;
+
+  titleEl.textContent = "Welcome to my quiz!";
+  timerEl.textContent = `Time: ${secondsLeft}`;
+  startBtn.textContent = "Start";
+  containerEl.appendChild(startBtn);
 }
 
 startBtn.addEventListener("click", startQuiz);
