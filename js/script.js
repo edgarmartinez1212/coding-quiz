@@ -2,7 +2,6 @@ let headerEl = document.querySelector("header");
 let mainEl = document.querySelector("main");
 let containerEl = document.createElement("div");
 let footerEl = document.querySelector("footer");
-
 let questions = [
   {
     question: "What color is the sky?",
@@ -32,24 +31,17 @@ let timerEl = document.createElement("h3");
 let choicesDiv = document.createElement("div");
 viewScoresEl.textContent = "View Scores";
 viewScoresEl.setAttribute("style", "cursor: default");
-
 headerEl.appendChild(viewScoresEl);
 headerEl.appendChild(timerEl);
 
 // main default
 let titleEl = document.createElement("h1");
 let startBtn = document.createElement("button");
-
 mainEl.append(titleEl, containerEl);
 
 // footer default
 let resultEl = document.createElement("h3");
 footerEl.appendChild(resultEl);
-
-// button card
-// need to create a button card to add button choices
-// without button card running into issues removing children from containerEl
-// issue: click view scores when quiz started -> removes children from containerEl but 2!
 
 // ends quiz-
 function endQuiz() {
@@ -117,6 +109,7 @@ function startTimer() {
 
 // validates users answer
 function validate(event) {
+  let buttonCardEl = document.querySelector(".buttonCardEl");
   let waitTime = 1;
   let wait = setInterval(function () {
     waitTime--;
@@ -126,8 +119,8 @@ function validate(event) {
       resultEl.textContent = "";
     }
   }, 1000);
-  let choicesArr = containerEl.childNodes;
-  for (let i = 0; i < containerEl.childElementCount; i++) {
+  let choicesArr = buttonCardEl.childNodes;
+  for (let i = 0; i < buttonCardEl.childElementCount; i++) {
     choicesArr[i].removeEventListener("click", validate);
     if (choicesArr[i].textContent === questions[iteration].answer) {
       choicesArr[i].setAttribute("style", "border: 3px solid green");
@@ -147,8 +140,9 @@ function validate(event) {
 // updates question with next in array- ends quiz if end of question array
 function updateQuestion() {
   if (iteration < questions.length) {
+    let buttonCardEl = document.querySelector(".buttonCardEl");
     titleEl.textContent = questions[iteration].question;
-    let choicesArr = containerEl.childNodes;
+    let choicesArr = buttonCardEl.childNodes;
     for (let i = 0; i < choicesArr.length; i++) {
       choicesArr[i].textContent = questions[iteration].choices[i];
       choicesArr[i].setAttribute("id", "questionChoice");
@@ -165,12 +159,15 @@ function updateQuestion() {
 function createCard() {
   //   clearContainerEl();
 
+  let buttonCardEl = document.createElement("div");
+  buttonCardEl.setAttribute("class", "buttonCardEl");
   for (let i = 0; i < questions[iteration].choices.length; i++) {
     let buttonEl = document.createElement("button");
-    containerEl.append(buttonEl);
     buttonEl.addEventListener("click", validate);
     buttonEl.setAttribute("id", "");
+    buttonCardEl.append(buttonEl);
   }
+  containerEl.appendChild(buttonCardEl);
   updateQuestion();
 }
 
@@ -231,6 +228,7 @@ function init() {
 
   titleEl.textContent = "Welcome to my quiz!";
   timerEl.textContent = `Time: ${secondsLeft}`;
+  footerEl.textContent = "";
   startBtn.textContent = "Start";
   containerEl.appendChild(startBtn);
 }
@@ -239,5 +237,4 @@ startBtn.addEventListener("click", startQuiz);
 viewScoresEl.addEventListener("click", handleViewScores);
 
 init();
-
 // GOAL - build site without needing to refresh page
