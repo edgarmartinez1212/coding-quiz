@@ -24,6 +24,7 @@ let score = 0;
 let timerInterval = "";
 let secondsLeft = 30;
 let iteration = 0;
+// localStorage.setItem("scores", []);
 
 //   header default - do not delete
 let viewScoresEl = document.createElement("h3");
@@ -77,7 +78,19 @@ function createForm() {
 
   scoreBtn.addEventListener("click", function (event) {
     event.preventDefault();
-    console.log(scoreInput.value);
+
+    let scoresArr = localStorage.getItem("scores");
+    if (scoresArr) {
+      scoresArr = JSON.parse(scoresArr);
+    } else {
+      scoresArr = [];
+    }
+    scoresArr.push({ name: scoreInput.value, highScore: score });
+    localStorage.setItem("scores", JSON.stringify(scoresArr));
+    let choicesArr = containerEl.childNodes;
+    for (let i = 0; i < choicesArr.length; i++) {
+      choicesArr[i].remove();
+    }
   });
 }
 
@@ -154,12 +167,49 @@ function startQuiz() {
 }
 
 function init() {
+  let choicesArr = containerEl.childNodes;
+  for (let i = 0; i < choicesArr.length; i++) {
+    choicesArr[i].remove();
+  }
+
+  score = 0;
   titleEl.textContent = "Welcome to my quiz!";
   startBtn.textContent = "Start";
   containerEl.appendChild(startBtn);
 }
+function handleViewScores() {
+  let choicesArr = containerEl.childNodes;
+  for (let i = 0; i < choicesArr.length; i++) {
+    choicesArr[i].remove();
+  }
+
+  let scoresArr = localStorage.getItem("scores");
+  let highScoreDiv = document.createElement("div");
+
+  if (scoresArr) {
+    scoresArr = JSON.parse(scoresArr);
+    scoresArr.sort((a, b) => b.highScore - a.highScore);
+    titleEl.textContent = "High Scores";
+
+    for (let i = 0; i < scoresArr.length; i++) {
+      let scoreEl = document.createElement("h4");
+      scoreEl.textContent = `${i + 1}. ${scoresArr[i].name} - ${scoresArr[i].highScore} points`;
+      highScoreDiv.appendChild(scoreEl);
+    }
+  } else {
+    titleEl.textContent = "No Scores";
+  }
+  let homeBtn = document.createElement("button");
+  homeBtn.textContent = "Home";
+  homeBtn.addEventListener("click", function () {
+    init();
+  });
+  highScoreDiv.appendChild(homeBtn);
+  containerEl.appendChild(highScoreDiv);
+}
 
 startBtn.addEventListener("click", startQuiz);
+viewScoresEl.addEventListener("click", handleViewScores);
 
 init();
 

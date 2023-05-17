@@ -56,9 +56,7 @@ scoresFormEl.append(nameTextEl, scoresSubmitEl);
 scoresSubmitEl.addEventListener("click", handleSubmit);
 function handleSubmit(event) {
   event.preventDefault();
-  let scoresArr = JSON.parse(localStorage.getItem("scores"));
-  scoresArr.push({ name: nameTextEl.value, highScore: score });
-  localStorage.setItem("scores", JSON.stringify(scoresArr));
+
 }
 
 // main - view scores
