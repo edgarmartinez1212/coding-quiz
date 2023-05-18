@@ -2,23 +2,77 @@ let headerEl = document.querySelector("header");
 let mainEl = document.querySelector("main");
 let containerEl = document.createElement("div");
 let footerEl = document.querySelector("footer");
-let questions = [
+containerEl.setAttribute("class", "container");
+const questions = [
   {
-    question: "What color is the sky?",
-    choices: ["Blue", "Orange", "Yellow", "Red"],
-    answer: "Blue",
+    question: "What is the capital of France?",
+    choices: ["Paris", "London", "Madrid", "Rome"],
+    answer: "Paris",
   },
   {
-    question: "What color is space?",
-    choices: ["Blue", "Black", "Yellow", "Red"],
-    answer: "Black",
+    question: "Which planet is known as the 'Red Planet'?",
+    choices: ["Mars", "Jupiter", "Venus", "Saturn"],
+    answer: "Mars",
   },
   {
-    question: "What color is the sun?",
-    choices: ["Blue", "Orange", "Yellow", "Red"],
-    answer: "Yellow",
+    question: "What is the largest ocean in the world?",
+    choices: ["Pacific Ocean", "Indian Ocean", "Atlantic Ocean", "Arctic Ocean"],
+    answer: "Pacific Ocean",
+  },
+  {
+    question: "Who painted the Mona Lisa?",
+    choices: ["Leonardo da Vinci", "Pablo Picasso", "Vincent van Gogh", "Michelangelo"],
+    answer: "Leonardo da Vinci",
+  },
+  {
+    question: "What is the largest organ in the human body?",
+    choices: ["Skin", "Liver", "Heart", "Brain"],
+    answer: "Skin",
+  },
+  {
+    question: "What is the chemical symbol for the element gold?",
+    choices: ["Au", "Ag", "Go", "Gd"],
+    answer: "Au",
+  },
+  {
+    question: "Who wrote the famous play Romeo and Juliet?",
+    choices: ["William Shakespeare", "Jane Austen", "Mark Twain", "F. Scott Fitzgerald"],
+    answer: "William Shakespeare",
+  },
+  {
+    question: "Which country is known as the Land of the Rising Sun?",
+    choices: ["Japan", "China", "Thailand", "South Korea"],
+    answer: "Japan",
+  },
+  {
+    question: "What is the largest mammal on Earth?",
+    choices: ["Blue whale", "Elephant", "Giraffe", "Lion"],
+    answer: "Blue whale",
+  },
+  {
+    question: "What is the primary language spoken in Brazil?",
+    choices: ["Portuguese", "Spanish", "French", "Italian"],
+    answer: "Portuguese",
   },
 ];
+
+// let questions = [
+//   {
+//     question: "What is the capital of France?",
+//     choices: ["", "London", "Madrid", "Rome"],
+//     answer: "Blue",
+//   },
+//   {
+//     question: "What color is space?",
+//     choices: ["Blue", "Black", "Yellow", "Red"],
+//     answer: "Black",
+//   },
+//   {
+//     question: "What color is the sun?",
+//     choices: ["Blue", "Orange", "Yellow", "Red"],
+//     answer: "Yellow",
+//   },
+// ];
 let score = 0;
 let timerInterval = "";
 let secondsLeft = 30;
@@ -30,13 +84,17 @@ let viewScoresEl = document.createElement("h3");
 let timerEl = document.createElement("h3");
 let choicesDiv = document.createElement("div");
 viewScoresEl.textContent = "View Scores";
-viewScoresEl.setAttribute("style", "cursor: default");
+viewScoresEl.setAttribute("style", "cursor: pointer");
+viewScoresEl.setAttribute("class", "viewScoresEl");
+timerEl.setAttribute("class", "timerEl");
 headerEl.appendChild(viewScoresEl);
 headerEl.appendChild(timerEl);
 
 // main default
 let titleEl = document.createElement("h1");
 let startBtn = document.createElement("button");
+titleEl.setAttribute("class", "titleEl");
+startBtn.setAttribute("class", "startBtn button");
 mainEl.append(titleEl, containerEl);
 
 // footer default
@@ -123,9 +181,11 @@ function validate(event) {
   for (let i = 0; i < buttonCardEl.childElementCount; i++) {
     choicesArr[i].removeEventListener("click", validate);
     if (choicesArr[i].textContent === questions[iteration].answer) {
-      choicesArr[i].setAttribute("style", "border: 3px solid green");
+      //   choicesArr[i].setAttribute("style", "border: 2px solid green");
+      choicesArr[i].setAttribute("style", "background-color: green");
     } else {
-      choicesArr[i].setAttribute("style", "border: 3px solid red");
+      //   choicesArr[i].setAttribute("style", "border: 2px solid red");
+      choicesArr[i].setAttribute("style", "background-color: red");
     }
   }
   if (event.target.textContent === questions[iteration].answer) {
@@ -165,6 +225,7 @@ function createCard() {
     let buttonEl = document.createElement("button");
     buttonEl.addEventListener("click", validate);
     buttonEl.setAttribute("id", "");
+    buttonEl.setAttribute("class", "buttonEl button");
     buttonCardEl.append(buttonEl);
   }
   containerEl.appendChild(buttonCardEl);
@@ -175,10 +236,11 @@ function createCard() {
 function handleViewScores() {
   clearInterval(timerInterval);
   clearContainerEl();
+  clearContainerEl();
   score = 0;
-  secondsLeft = 30;
+  //   secondsLeft = 30;
   iteration = 0;
-  timerEl.textContent = `Time: ${secondsLeft}`;
+  //   timerEl.textContent = `Time: ${secondsLeft}`;
 
   let scoresArr = localStorage.getItem("scores");
   let highScoreDiv = document.createElement("div");
@@ -198,6 +260,7 @@ function handleViewScores() {
   }
   let homeBtn = document.createElement("button");
   homeBtn.textContent = "Home";
+  homeBtn.setAttribute("class", "button");
   homeBtn.addEventListener("click", init);
   highScoreDiv.appendChild(homeBtn);
   containerEl.appendChild(highScoreDiv);
