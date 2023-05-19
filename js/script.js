@@ -55,39 +55,23 @@ const questions = [
     answer: "Portuguese",
   },
 ];
-
-// let questions = [
-//   {
-//     question: "What is the capital of France?",
-//     choices: ["", "London", "Madrid", "Rome"],
-//     answer: "Blue",
-//   },
-//   {
-//     question: "What color is space?",
-//     choices: ["Blue", "Black", "Yellow", "Red"],
-//     answer: "Black",
-//   },
-//   {
-//     question: "What color is the sun?",
-//     choices: ["Blue", "Orange", "Yellow", "Red"],
-//     answer: "Yellow",
-//   },
-// ];
 let score = 0;
 let timerInterval = "";
 let secondsLeft = 30;
 let iteration = 0;
-// localStorage.setItem("scores", []);
 
 //   header default - do not delete
+let aboutEl = document.createElement("h3");
 let viewScoresEl = document.createElement("h3");
 let timerEl = document.createElement("h3");
 let choicesDiv = document.createElement("div");
+aboutEl.textContent = "About";
 viewScoresEl.textContent = "View Scores";
 viewScoresEl.setAttribute("style", "cursor: pointer");
 viewScoresEl.setAttribute("class", "viewScoresEl");
 timerEl.setAttribute("class", "timerEl");
 headerEl.appendChild(viewScoresEl);
+headerEl.appendChild(aboutEl);
 headerEl.appendChild(timerEl);
 
 // main default
@@ -97,9 +81,10 @@ titleEl.setAttribute("class", "titleEl");
 startBtn.setAttribute("class", "startBtn button");
 mainEl.append(titleEl, containerEl);
 
+// need to add about to footer describing the project
 // footer default
-let resultEl = document.createElement("h3");
-footerEl.appendChild(resultEl);
+// let resultEl = document.createElement("h3");
+// footerEl.appendChild(resultEl);
 
 // ends quiz-
 function endQuiz() {
@@ -146,7 +131,7 @@ function createForm() {
     scoreForm.removeChild(scoreInput);
     scoreForm.removeChild(scoreBtn);
     let homeBtn = document.createElement("button");
-    titleEl.textContent = "Score submitted!\nThank you!";
+    titleEl.textContent = "Score submitted! Thank you!";
     homeBtn.textContent = "Home";
     scoreForm.appendChild(homeBtn);
     homeBtn.addEventListener("click", init);
@@ -174,7 +159,7 @@ function validate(event) {
     if (waitTime === 0) {
       clearInterval(wait);
       updateQuestion();
-      resultEl.textContent = "";
+      //   resultEl.textContent = "";
     }
   }, 1000);
   let choicesArr = buttonCardEl.childNodes;
@@ -188,12 +173,12 @@ function validate(event) {
       choicesArr[i].setAttribute("style", "background-color: red");
     }
   }
-  if (event.target.textContent === questions[iteration].answer) {
-    resultEl.textContent = "Correct!";
-    score++;
-  } else {
-    resultEl.textContent = "Wrong Answer!";
-  }
+  //   if (event.target.textContent === questions[iteration].answer) {
+  //     resultEl.textContent = "Correct!";
+  //     score++;
+  //   } else {
+  //     resultEl.textContent = "Wrong Answer!";
+  //   }
   iteration++;
 }
 
@@ -281,9 +266,26 @@ function clearContainerEl() {
   }
 }
 
+function handleAbout() {
+  clearContainerEl();
+  clearInterval(timerInterval);
+  score = 0;
+  secondsLeft = 30;
+  iteration = 0;
+  timerEl.textContent = `Time: ${secondsLeft}`;
+  titleEl.textContent = "About";
+  let aboutDiv = document.createElement("div");
+  let aboutMsg = document.createElement("h5");
+  aboutMsg.innerHTML =
+    "Welcome to my quiz website! I have created this platform to showcase my proficiency in HTML, CSS, and JavaScript. With the primary goal of utilizing the Document Object Model (DOM), I have leveraged its power to dynamically generate and manipulate all elements within the site.<br><br>Through this website, you can put your knowledge to the test by engaging in my quiz. The quiz is crafted with questions from various subjest and multiple-choice options to challenge your intellect and entertain you simultaneously.<br><br>By employing HTML, I have laid the foundation of the site's structure, ensuring a well-organized and accessible user interface. CSS comes into play to add visual appeal, enhancing the overall aesthetics and creating an engaging user experience. The true magic, however, happens with JavaScript, where I harness the DOM to dynamically generate quiz questions, handle user interactions, calculate scores, and provide instant feedback.<br><br>With this website, I aim to demonstrate my skills in web development and provide an interactive and enjoyable experience for quiz enthusiasts. So, dive in, explore the quiz, and put your knowledge to the test! Enjoy the journey of learning and entertainment through the synergy of HTML, CSS, and JavaScript-powered elements that bring this quiz site to life.<br><br>not responsive";
+  aboutDiv.appendChild(aboutMsg);
+  containerEl.appendChild(aboutDiv);
+}
+
 // default state
 function init() {
   clearContainerEl();
+  clearInterval(timerInterval);
 
   score = 0;
   secondsLeft = 30;
@@ -298,6 +300,8 @@ function init() {
 
 startBtn.addEventListener("click", startQuiz);
 viewScoresEl.addEventListener("click", handleViewScores);
+aboutEl.addEventListener("click", handleAbout);
+timerEl.addEventListener("click", init);
 
 init();
 // GOAL - build site without needing to refresh page
