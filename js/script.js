@@ -273,7 +273,7 @@ function handleAbout() {
   secondsLeft = 30;
   iteration = 0;
   timerEl.textContent = `Time: ${secondsLeft}`;
-  titleEl.textContent = "About";
+  titleEl.textContent = "About the Quiz";
   let aboutDiv = document.createElement("div");
   let aboutMsg = document.createElement("h5");
   aboutMsg.innerHTML =
