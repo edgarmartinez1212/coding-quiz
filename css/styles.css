@@ -1,0 +1,68 @@
+header {
+    height: fit-content;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.viewScoresEl {
+    height: 50px;
+    width: 250px;
+}
+.timerEl{
+    height: 50px;
+    width: 200px;
+}
+
+.button, .buttonEl {
+    cursor: pointer;
+    height: 50px;
+    width: 180px;
+    margin: 5px;
+}
+
+main {
+    height: fit-content;
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    padding: 20px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+}
+.titleEl{
+    height: fit-content;
+    width: 800px;
+}
+
+.container{
+    height: fit-content;
+    width: 800px;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer{
+    height: 30px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    text-align: center;
+    /* font-size: 35px; */
+    font-weight: bold;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+}
