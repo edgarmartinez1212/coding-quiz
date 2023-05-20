@@ -11,12 +11,12 @@ const questions = [
   },
   {
     question: "Which planet is known as the 'Red Planet'?",
-    choices: ["Mars", "Jupiter", "Venus", "Saturn"],
+    choices: ["Jupiter", "Venus", "Mars", "Saturn"],
     answer: "Mars",
   },
   {
     question: "What is the largest ocean in the world?",
-    choices: ["Pacific Ocean", "Indian Ocean", "Atlantic Ocean", "Arctic Ocean"],
+    choices: ["Indian Ocean", "Pacific Ocean", "Atlantic Ocean", "Arctic Ocean"],
     answer: "Pacific Ocean",
   },
   {
@@ -26,27 +26,27 @@ const questions = [
   },
   {
     question: "What is the largest organ in the human body?",
-    choices: ["Skin", "Liver", "Heart", "Brain"],
+    choices: ["Liver", "Skin", "Heart", "Brain"],
     answer: "Skin",
   },
   {
     question: "What is the chemical symbol for the element gold?",
-    choices: ["Au", "Ag", "Go", "Gd"],
+    choices: ["Ag", "Go", "Gd", "Au"],
     answer: "Au",
   },
   {
     question: "Who wrote the famous play Romeo and Juliet?",
-    choices: ["William Shakespeare", "Jane Austen", "Mark Twain", "F. Scott Fitzgerald"],
+    choices: ["Jane Austen", "Mark Twain", "William Shakespeare", "F. Scott Fitzgerald"],
     answer: "William Shakespeare",
   },
   {
     question: "Which country is known as the Land of the Rising Sun?",
-    choices: ["Japan", "China", "Thailand", "South Korea"],
+    choices: ["China", "Japan", "Thailand", "South Korea"],
     answer: "Japan",
   },
   {
     question: "What is the largest mammal on Earth?",
-    choices: ["Blue whale", "Elephant", "Giraffe", "Lion"],
+    choices: ["Elephant", "Giraffe", "Lion", "Blue whale"],
     answer: "Blue whale",
   },
   {
